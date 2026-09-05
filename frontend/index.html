@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Razorpay Pulse — AI Payment Reliability & Revenue Intelligence</title>
+<meta name="description" content="Razorpay Pulse detects payment degradation, investigates the root cause across banks/methods/regions with evidence, quantifies revenue at risk, and takes bounded, auditable action." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2334d399'/%3E%3Cpath d='M6 17h5l3-8 4 16 3-8h5' stroke='%23080b13' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pulse.css">
+</head>
+<body style="visibility:hidden;">
+
+<div class="bg-mesh" aria-hidden="true"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<nav class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand" id="brandHome" role="button" tabindex="0" title="Back to top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Razorpay Pulse</span>
+      <span class="brand-tag">Payment Reliability Intelligence</span>
+    </div>
+    <div class="nav-links">
+      <a href="#command">Command Center</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#safety">Guardrails</a>
+      <a href="#impact">Why This Matters</a>
+      <a href="#about">About</a>
+    </div>
+    <span class="pill" id="healthPill">connecting…</span>
+    <div class="account-menu">
+      <button id="profileBtn" class="profile-btn" title="Account" aria-haspopup="true" aria-expanded="false">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div id="profileDropdown" class="profile-dropdown" hidden>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-email" id="profileEmail"></div>
+        <span class="profile-role-tag" id="profileRoleTag"></span>
+        <hr class="profile-divider" />
+        <button id="signOutBtn" class="profile-signout-btn">Sign out</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Razorpay AI Buildathon &middot; Track 03 &middot; AI Revenue Recovery</p>
+        <h1>Don't just alert that payments dropped. <span class="hl">Explain why</span>, and fix what's safe to fix.</h1>
+        <p class="hero-sub">
+          Pulse continuously watches payment success rates across every method, bank, and region.
+          When something degrades, it investigates like an analyst would &mdash; isolates the real cause,
+          quantifies the revenue at risk, and takes a bounded, auditable action instead of just paging someone.
+        </p>
+        <div class="hero-actions">
+          <a href="#command" class="cta"><span class="cta-dot"></span>Open the live command center</a>
+          <a href="#architecture" class="cta-ghost">See how it works &rarr;</a>
+        </div>
+        <div class="trust-row">
+          <span class="trust-badge">Evidence-based root cause</span>
+          <span class="trust-badge">Confidence + risk gated actions</span>
+          <span class="trust-badge">Learns from past incidents</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="flow-card">
+          <div class="flow-row"><span class="flow-chip fail">detect</span><span class="flow-arrow">&rarr;</span><span class="flow-chip diagnose">investigate</span></div>
+          <div class="flow-row"><span class="flow-chip decide">quantify</span><span class="flow-arrow">&rarr;</span><span class="flow-chip act">act &amp; learn</span></div>
+          <div class="flow-pulse-line"></div>
+          <div class="flow-result">
+            <span class="flow-result-label">live overall success rate</span>
+            <span class="flow-result-value" id="heroRate">&mdash;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COMMAND CENTER ===================== -->
+  <section id="command" class="demo-section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-kicker">Live Demo</p>
+        <h2>Command Center</h2>
+        <p class="section-sub">This is a live simulated transaction stream, not a static mockup — traffic is generated every couple of seconds. Trigger a scenario below and watch the full pipeline run.</p>
+      </div>
+
+      <div class="health-row">
+        <div class="health-card">
+          <span class="stat-label">Overall success rate</span>
+          <span class="stat-value" id="statOverallRate">&mdash;</span>
+          <span class="stat-foot">baseline <span id="statBaseline">&mdash;</span></span>
+        </div>
+        <div class="health-card sparkline-card">
+          <span class="stat-label">Trend (last ~40 ticks)</span>
+          <svg id="sparkline" viewBox="0 0 300 60" preserveAspectRatio="none" class="sparkline"></svg>
+        </div>
+        <div class="health-card">
+          <span class="stat-label">Method health</span>
+          <div id="methodHealth" class="method-bars"></div>
+        </div>
+      </div>
+
+      <div class="scenario-row">
+        <span class="scenario-label">Inject a simulated incident:</span>
+        <div class="scenario-buttons" id="scenarioButtons"></div>
+        <button id="resetBtn" class="cta-secondary danger">Reset simulation</button>
+      </div>
+      <div id="errorBanner" class="error-banner" hidden></div>
+
+      <div class="freeform-panel">
+        <h4>Or describe your own issue</h4>
+        <p class="panel-note">Not every problem fits a preset scenario. Type it, speak it, or attach a screenshot — the agent interprets it the same way it interprets simulated traffic, through the same guardrails.</p>
+        <div class="textarea-wrap">
+          <textarea id="freeformText" class="freeform-textarea" maxlength="1000" placeholder="e.g. &quot;Card payments from customers in Bangalore have been failing since this morning...&quot;"></textarea>
+          <button id="clearTextBtn" class="text-clear-btn" type="button" title="Clear text" hidden>&times;</button>
+        </div>
+        <div class="freeform-controls">
+          <button id="micBtn" type="button" class="cta-secondary">&#127908; Speak</button>
+          <label class="cta-secondary file-label">
+            &#128247; Attach screenshot
+            <input type="file" id="imageInput" accept="image/*" hidden />
+          </label>
+          <button id="imagePreviewChip" class="image-chip" type="button" hidden>
+            <span id="imagePreviewName"></span>
+            <span class="image-chip-remove" id="removeImageBtn" title="Remove image">&times;</span>
+          </button>
+          <button id="freeformSubmitBtn" class="cta" style="margin-left:auto;">Diagnose my issue</button>
+        </div>
+      </div>
+
+      <div class="demo-grid">
+        <div class="ledger-panel" id="investigationPanel">
+          <div class="panel-head">
+            <h3>Investigation</h3>
+            <span class="panel-note" id="incidentIdNote">No active incident</span>
+          </div>
+          <div id="investigationBody">
+            <div class="ledger-empty">System is healthy. Inject a scenario above to watch the agent detect and investigate it.</div>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <div class="panel-block">
+            <h4>Revenue impact</h4>
+            <div id="revenuePanel" class="rail-row-wrap">
+              <div class="rail-row"><span class="rail-label">Gross exposure</span><span class="rail-value mono" id="revGross">&mdash;</span></div>
+              <div class="rail-row"><span class="rail-label">Est. recoverable</span><span class="rail-value mono" id="revRecoverable">&mdash;</span></div>
+              <div class="rail-row"><span class="rail-label">Recovery probability</span><span class="rail-value mono" id="revProb">&mdash;</span></div>
+            </div>
+          </div>
+          <div class="panel-block">
+            <h4>Recommended action</h4>
+            <p class="recommendation-text" id="recommendationText">No recommendation yet.</p>
+            <div class="action-buttons" id="actionButtons"></div>
+          </div>
+          <div class="panel-block">
+            <h4>Similar past incident</h4>
+            <p class="recommendation-text" id="similarIncidentText">None yet — this will populate once at least one incident has been resolved.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="ledger-panel" style="margin-top:22px;">
+        <div class="panel-head">
+          <h3>Incident memory</h3>
+          <div class="panel-head-actions">
+            <span class="panel-note">Click any entry for full details &middot; resolved incidents inform future confidence</span>
+            <button id="clearMemoryBtn" class="cta-secondary danger">Clear history</button>
+          </div>
+        </div>
+        <div id="memoryList" class="ledger">
+          <div class="ledger-empty">No resolved incidents yet.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ARCHITECTURE ===================== -->
+  <section id="architecture" class="arch-section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-kicker">System Architecture</p>
+        <h2>Detect &rarr; Investigate &rarr; Quantify &rarr; Recommend &rarr; Act &rarr; Learn</h2>
+        <p class="section-sub">Every stage is a discrete, inspectable step. The LLM only narrates — it never decides the diagnosis or the action.</p>
+      </div>
+      <div class="arch-diagram">
+        <div class="arch-col"><div class="arch-node source"><span class="arch-node-tag">Trigger</span><strong>Live Transaction Stream</strong><p>Simulated traffic across 4 payment methods, 10 providers, and 4 regions, generated every tick.</p></div></div>
+        <div class="arch-connector"><span>&darr;</span></div>
+        <div class="arch-col"><div class="arch-node engine"><span class="arch-node-tag">Detect</span><strong>Statistical Anomaly Detection</strong><p>Compares overall, per-method, and per-region success rates against established baselines &mdash; catches localized incidents that would be diluted out of the overall average.</p></div></div>
+        <div class="arch-connector"><span>&darr;</span></div>
+        <div class="arch-col"><div class="arch-node engine"><span class="arch-node-tag">Investigate</span><strong>Root Cause Drill-Down</strong><p>Structural, evidence-based classification: region &rarr; method &rarr; provider &rarr; error code. Never looks at ground truth &mdash; only observable deviations, exactly like a human analyst would reason.</p></div></div>
+        <div class="arch-connector split"><span class="split-label">explain findings</span><span>&darr;</span></div>
+        <div class="arch-col"><div class="arch-node ai"><span class="arch-node-tag">AI-assisted narrative</span><strong>Gemini Explanation</strong><p>Turns structured evidence into a plain-English summary and customer notices. Never touches the diagnosis, confidence score, or action decision.</p></div></div>
+        <div class="arch-connector"><span>&darr;</span></div>
+        <div class="arch-col"><div class="arch-node engine"><span class="arch-node-tag">Quantify</span><strong>Revenue-at-Risk Engine</strong><p>Gross exposure from lost transactions, discounted by a category-specific recovery probability &mdash; never claims 100% of exposed revenue is recoverable.</p></div></div>
+        <div class="arch-connector"><span>&darr;</span></div>
+        <div class="arch-col actions-row">
+          <div class="arch-node action retry"><strong>Auto</strong><p>High confidence + low risk</p></div>
+          <div class="arch-node action notify"><strong>Approval required</strong><p>Medium/unclear risk</p></div>
+          <div class="arch-node action escalate"><strong>Human only</strong><p>Merchant-side patterns</p></div>
+          <div class="arch-node action refund"><strong>Investigate further</strong><p>Low confidence</p></div>
+        </div>
+        <div class="arch-connector"><span>&darr;</span></div>
+        <div class="arch-col"><div class="arch-node output"><span class="arch-node-tag">Learn</span><strong>Incident Memory</strong><p>Every resolved incident's category, confidence, and outcome is persisted, so the next similar incident can cite precedent.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SAFETY / GUARDRAILS ===================== -->
+  <section id="safety" class="safety-section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-kicker">Guardrails</p>
+        <h2>Autonomy is earned, not assumed</h2>
+        <p class="section-sub">Confidence alone never authorizes an action — risk tier matters just as much.</p>
+      </div>
+      <div class="safety-grid">
+        <div class="safety-card"><span class="safety-icon retry">01</span><h4>Low confidence &rarr; investigate further</h4><p>Below 60% confidence, Pulse never guesses. It flags the pattern for manual analyst review instead of picking an action.</p></div>
+        <div class="safety-card"><span class="safety-icon refund">02</span><h4>High confidence + low risk &rarr; auto</h4><p>Only when both confidence is high AND the action type is inherently low-risk (like a customer notice) does Pulse act without waiting for a human.</p></div>
+        <div class="safety-card"><span class="safety-icon ai">03</span><h4>Medium/high risk &rarr; approval required</h4><p>Even at 90%+ confidence, actions like re-routing payment method recommendations wait for a human click before executing.</p></div>
+        <div class="safety-card"><span class="safety-icon fail">04</span><h4>Merchant-side patterns &rarr; human only, always</h4><p>If every payment method degrades at once, Pulse recognizes this likely isn't a bank issue at all &mdash; and refuses to automate a fix regardless of confidence.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== IMPACT ===================== -->
+  <section id="impact" class="impact-section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-kicker">Why This Matters</p>
+        <h2>Aggregate dashboards hide the incidents that cost the most</h2>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card"><span class="impact-number">19B+</span><span class="impact-label">UPI transactions processed monthly in India</span></div>
+        <div class="impact-card"><span class="impact-number">&lt;1%</span><span class="impact-label">NPCI's technical decline target &mdash; small percentages, large absolute volumes</span></div>
+        <div class="impact-card"><span class="impact-number">~5%</span><span class="impact-label">NPCI's business decline target &mdash; failures that need explanation and action, not silence</span></div>
+      </div>
+      <p class="impact-note">
+        A single bank or processor degrading affects a fraction of total volume — often not enough to move an
+        overall dashboard number, but enough to represent real, concentrated revenue loss for the merchants and
+        customers routed through it. That's precisely the blind spot Pulse is built to close. Figures reflect
+        NPCI's published UPI decline benchmarks and reported monthly transaction volumes (2025&ndash;2026).
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== TECH STACK ===================== -->
+  <section class="stack-section">
+    <div class="wrap">
+      <div class="section-head"><p class="section-kicker">Tech Stack</p><h2>Built with</h2></div>
+      <div class="stack-grid">
+        <div class="stack-item"><strong>Node.js + Express</strong><span>Tick loop, API, and simulation engine</span></div>
+        <div class="stack-item"><strong>Statistical anomaly detection</strong><span>Baseline deviation across overall/method/region dimensions</span></div>
+        <div class="stack-item"><strong>Google Gemini API</strong><span>Narrative generation only &mdash; never decisions</span></div>
+        <div class="stack-item"><strong>Vanilla JS + CSS</strong><span>Zero-build frontend, fast to run anywhere</span></div>
+        <div class="stack-item"><strong>JSON file persistence</strong><span>Incident memory across restarts</span></div>
+        <div class="stack-item"><strong>Node's built-in test runner</strong><span>Unit tests for detection, revenue, and guardrail logic</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about" class="about-section">
+    <div class="wrap about-grid">
+      <div>
+        <p class="section-kicker">About This Project</p>
+        <h2>Going beyond "something's wrong" alerts</h2>
+        <p>Razorpay's own RAY Concierge already monitors critical metrics and alerts merchants before failures escalate. Razorpay's Agent Studio already ships production agents for cart recovery, disputes, subscriptions, cashflow forecasting, and settlement insights.</p>
+        <p>Pulse is deliberately positioned in the gap those don't cover: when the top-line success rate metric looks only mildly off, but a specific bank, processor, or region is quietly failing far worse underneath it. Pulse investigates that gap with evidence, quantifies what it's actually costing, and only acts within limits a human has set.</p>
+      </div>
+      <div class="roadmap">
+        <h4>What's next</h4>
+        <ul>
+          <li>Connect to real Razorpay test-mode webhook data alongside the simulator</li>
+          <li>Multi-incident handling (currently one active incident at a time, by design, for a clean demo)</li>
+          <li>Slack/email escalation for every <code>human_only</code> case</li>
+          <li>Historical precision/recall benchmarking against a larger labeled incident set</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="section-head" style="margin-top:50px;">
+        <p class="section-kicker">Design Decisions &amp; Rationale</p>
+        <h2>Why it's built this way, not some other way</h2>
+        <p class="section-sub">Every non-obvious choice below was deliberate — here's the reasoning, so it doesn't have to be taken on faith.</p>
+      </div>
+      <div class="decision-grid">
+        <div class="decision-card">
+          <h4>Why does this require signing in?</h4>
+          <p>Because a real fintech dashboard never would let anyone see payment data, revenue figures, or incident actions without authentication — even though the data here is synthetic, gating it practices the access-control habit a production system actually needs, rather than skipping it because "it's just a demo."</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why is there a Demo Account button?</h4>
+          <p>So anyone evaluating this project can get into the live, fully interactive product in one click — full read/write access, no account creation, no waiting on credentials.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why does the Demo Account have full read/write access, including clearing history?</h4>
+          <p>So an evaluator can genuinely try every feature exactly as an owner would, with nothing held back. The real distinction between accounts is session length — a demo session expires after 2 hours, an owner session lasts 7 days — rather than which buttons are visible.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why can individual history entries be deleted one at a time, not just cleared all at once?</h4>
+          <p>Bulk-clearing is a blunt instrument. If one entry is wrong, outdated, or just noise from testing, removing just that one preserves everything else worth keeping as precedent for future incidents.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why is so much of the data simulated?</h4>
+          <p>There's no access to real Razorpay production transactions. A realistic traffic simulator generates the data instead, and every simulated figure is labeled clearly as such — never presented as if it were real.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why does Gemini only explain, never decide?</h4>
+          <p>So an LLM's mistake — a hallucination, a misread sentence — can never directly cause a payment action on its own. The category, the confidence score, and the resulting action are deterministic, testable code. Gemini narrates what already happened; it doesn't get a vote in what happens next.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why do some incidents need human approval, and others get fully blocked from automation?</h4>
+          <p>Confidence alone isn't a safe basis for autonomy — risk matters just as much. A pattern that looks like a merchant's own broken checkout should never be "fixed" automatically by an AI guessing at infrastructure changes, no matter how confident the diagnosis is.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why does a resolved incident stay on screen until manually dismissed?</h4>
+          <p>So the person reviewing it decides when they're done looking, not a timer. Losing context because a card silently vanished mid-review is worse than one extra click.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why is there a free-form "describe your own issue" option alongside the fixed scenario buttons?</h4>
+          <p>Real problems don't always match a preset list. Typing, speaking, or screenshotting an actual issue and running it through the exact same evidence-based, guardrailed pipeline shows the system generalizes past canned demo buttons — not just click-throughs.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why are revenue figures always "estimated" or "recoverable," never "revenue saved"?</h4>
+          <p>Because nothing was actually saved in a simulation. Overstating results is the fastest way to lose credibility with anyone technical reviewing this — so the language stays honest even when it's less flattering.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why does the system remember past incidents?</h4>
+          <p>To demonstrate outcome-based learning instead of a stateless one-off tool — the next similar incident can cite exactly what happened last time, the way an experienced analyst would recall precedent rather than starting from zero every time.</p>
+        </div>
+        <div class="decision-card">
+          <h4>Why one single dashboard instead of separate merchant/analyst/admin views?</h4>
+          <p>Three interfaces would spend limited time on UI plumbing instead of the actual hard problem — detecting, investigating, and safely acting on a payment incident. One focused, capable dashboard demonstrates more engineering judgment than three thin ones, and it's what a real evaluator actually wants to see in a short review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div><div class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Razorpay Pulse</span></div><p>AI Payment Reliability &amp; Revenue Intelligence Agent, built for the Razorpay AI Buildathon.</p></div>
+    <div><h5>Track</h5><p>Track 03 &mdash; AI Revenue Recovery</p></div>
+    <div><h5>Core Principle</h5><p>Confidence and risk both gate autonomy. The AI narrates; deterministic rules decide.</p></div>
+  </div>
+  <div class="wrap footer-bottom"><span>&copy; 2026 Razorpay Pulse &middot; All transaction data is synthetic/simulated for demonstration</span></div>
+</footer>
+
+<div id="memoryModalOverlay" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <button id="memoryModalClose" class="modal-close" aria-label="Close">&times;</button>
+    <div id="memoryModalContent"></div>
+  </div>
+</div>
+
+<div id="imagePreviewOverlay" class="modal-overlay" hidden>
+  <div class="modal-box image-modal-box">
+    <button id="imagePreviewClose" class="modal-close" aria-label="Close">&times;</button>
+    <img id="imagePreviewFull" alt="Attached screenshot preview" />
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

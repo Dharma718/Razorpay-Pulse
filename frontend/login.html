@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — Pulse</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2334d399'/%3E%3Cpath d='M6 17h5l3-8 4 16 3-8h5' stroke='%23080b13' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="login.css">
+</head>
+<body class="login-body">
+
+<div class="bg-mesh" aria-hidden="true"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="login-brand-name">Pulse</span>
+    </div>
+    <p class="login-tagline">Payment Reliability &amp; Revenue Intelligence</p>
+
+    <div id="loadingState" class="login-loading">Loading…</div>
+
+    <!-- ===== First-run setup form (shown only when no account exists yet) ===== -->
+    <form id="setupForm" class="login-form" hidden>
+      <p class="login-mode-note">No account exists yet on this deployment — create one to secure it. This runs once; after this, you'll sign in normally.</p>
+      <label class="login-label" for="setupName">Preferred name</label>
+      <input type="text" id="setupName" class="login-input" autocomplete="name" placeholder="e.g. Priya" required />
+
+      <label class="login-label" for="setupEmail">Email</label>
+      <input type="email" id="setupEmail" class="login-input" autocomplete="username" required />
+
+      <label class="login-label" for="setupPassword">Password</label>
+      <div class="password-field">
+        <input type="password" id="setupPassword" class="login-input" autocomplete="new-password" minlength="8" required />
+        <button type="button" class="eye-btn" data-target="setupPassword" title="Show password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+
+      <label class="login-label" for="setupConfirmPassword">Re-enter password</label>
+      <div class="password-field">
+        <input type="password" id="setupConfirmPassword" class="login-input" autocomplete="new-password" minlength="8" required />
+        <button type="button" class="eye-btn" data-target="setupConfirmPassword" title="Show password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+
+      <div id="setupError" class="login-error" hidden></div>
+      <button type="submit" class="cta login-submit" id="setupSubmitBtn">Create account</button>
+    </form>
+
+    <!-- ===== Normal sign-in form (shown once an account exists) ===== -->
+    <form id="signinForm" class="login-form" hidden>
+      <label class="login-label" for="signinEmail">Email</label>
+      <input type="email" id="signinEmail" class="login-input" autocomplete="username" required />
+
+      <label class="login-label" for="signinPassword">Password</label>
+      <div class="password-field">
+        <input type="password" id="signinPassword" class="login-input" autocomplete="current-password" required />
+        <button type="button" class="eye-btn" data-target="signinPassword" title="Show password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+
+      <div id="signinError" class="login-error" hidden></div>
+      <button type="submit" class="cta login-submit" id="signinSubmitBtn">Sign in</button>
+    </form>
+
+    <!-- The demo option lives OUTSIDE both forms above and is always visible,
+         whether this deployment has an owner account yet or not — an
+         evaluator should never have to set up a real account just to try
+         the product. -->
+    <div id="demoSection" class="demo-section-block" hidden>
+      <div class="login-divider"><span>or</span></div>
+      <button type="button" class="cta-secondary login-demo-btn" id="demoBtn">Continue with Demo Account</button>
+      <p class="login-demo-note">Full read/write access to try every feature — session expires after 2 hours.</p>
+      <div id="demoError" class="login-error" hidden></div>
+    </div>
+  </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>
